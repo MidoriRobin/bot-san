@@ -1,0 +1,16 @@
+{
+  "name": "bot-san",
+  "version": "1.0.0",
+  "description": "My first attempt at making a Discord bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher P. Robinson",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.22.0"
+  }
+}
