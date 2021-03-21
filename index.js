@@ -1,13 +1,29 @@
 const dotenv = require("dotenv");
+const fs = require("fs");
 const Discord = require("discord.js");
 
 const { prefix } = require("./config.json");
+const suck = require("./commands/suck");
 
 //Loads data from .env files into process.env variable
 dotenv.config();
 
 //Creates a new Discord client
 const client = new Discord.Client();
+
+client.commands = new Discord.Collection();
+
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+
+  // set a new item in the Collection
+  // with the key as the command name and the value as the exported module
+  client.commands.set(command.name, command);
+}
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
@@ -22,57 +38,15 @@ client.on("message", (message) => {
   const command = args.shift().toLowerCase();
 
   if (command === "suck") {
-    message.channel.send("Yuh mada");
+    client.commands.get("suck").execute(message, args);
   } else if (command === "args-info") {
-    if (!args.length) {
-      return message.channel.send(
-        `You didn't provide any arguments, ${message.author}!`
-      );
-    }
-
-    message.channel.send(`Command name: ${command}\nArguments: ${args}`);
+    client.commands.get("args-info").execute(message, args);
   } else if (command === "kick") {
-    if (!message.mentions.users.size) {
-      return message.reply("you need to tag a user in order to kick them!");
-    }
-
-    // grab the "first" mentioned user from the message
-    // this will return a `User` object, just like `message.author`
-    const taggedUser = message.mentions.users.first();
-
-    message.channel.send(`You wanted to kick: ${taggedUser.username}`);
+    client.commands.get("kick").execute(message, args);
   } else if (command === "avatar") {
-    if (!message.mentions.users.size) {
-      return message.channel.send(
-        `Your avatar: <${message.author.displayAvatarURL({
-          format: "png",
-          dynamic: true,
-        })}>`
-      );
-    }
-
-    const avatarList = message.mentions.users.map((user) => {
-      return `${user.username}'s avatar: <${user.displayAvatarURL({
-        format: "png",
-        dynamic: true,
-      })}>`;
-    });
-
-    // send the entire array of strings as a message
-    // by default, discord.js will `.join()` the array with `\n`
-    message.channel.send(avatarList);
+    client.commands.get("avatar").execute(message, args);
   } else if (command === "prune") {
-    const amount = parseInt(args[0]) + 1;
-
-    if (isNaN(amount)) {
-      return message.reply("that doesn't seem to be a valid number.");
-    } else if (amount < 2 || amount > 100) {
-      return message.reply("you need to input a number between 1 and 99.");
-    }
-
-    message.channel.bulkDelete(amount);
-
-    // ...
+    client.commands.get("prune").execute(message, args);
   }
 });
 
