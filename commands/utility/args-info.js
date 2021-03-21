@@ -1,11 +1,10 @@
 module.exports = {
   name: "args-info",
   description: "Sends the arguments appened in a message.",
+  args: true,
   execute(message, args) {
-    if (!args.length) {
-      return message.channel.send(
-        `You didn't provide any arguments, ${message.author}!`
-      );
+    if (args[0] === "foo") {
+      return message.channel.send("bar");
     }
 
     message.channel.send(`Command name: ${command}\nArguments: ${args}`);
