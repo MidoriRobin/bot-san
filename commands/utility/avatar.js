@@ -1,5 +1,7 @@
 module.exports = {
   name: "avatar",
+  aliases: ["icon", "pfp"],
+  cooldown: 5,
   description:
     "Prints the avater of the calling user (or the tagged user if specified).",
   execute(message, args) {
