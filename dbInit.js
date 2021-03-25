@@ -19,6 +19,7 @@ require("./models/Users")(sequelize, Sequelize.DataTypes);
 require("./models/Match")(sequelize, Sequelize.DataTypes);
 require("./models/Wins")(sequelize, Sequelize.DataTypes);
 require("./models/Losses")(sequelize, Sequelize.DataTypes);
+require("./models/Result")(sequelize, Sequelize.DataTypes);
 
 const force = process.argv.includes("--force") || process.argv.includes("-f");
 
