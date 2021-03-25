@@ -1,20 +1,22 @@
 const dotenv = require("dotenv");
 const fs = require("fs");
 const Discord = require("discord.js");
+const { Users, Model } = require("./dbObjects");
 
 const { prefix } = require("./config.json");
+const bank = require("./collections/bank");
 
-//Loads data from .env files into process.env variable
-dotenv.config();
+const commandFolders = fs.readdirSync("./commands");
 
 //Creates a new Discord client
 const client = new Discord.Client();
 
+//Loads data from .env files into process.env variable
+dotenv.config();
+
 client.commands = new Discord.Collection();
 
 client.cooldowns = new Discord.Collection();
-
-const commandFolders = fs.readdirSync("./commands");
 
 // iterates through folders to locate commands
 for (const folder of commandFolders) {
@@ -33,7 +35,9 @@ for (const folder of commandFolders) {
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
-client.once("ready", () => {
+client.once("ready", async () => {
+  const balances = await Users.findAll();
+  balances.forEach((b) => bank.set(b.user_id, b));
   console.log("Ready!");
 });
 
