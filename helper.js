@@ -7,6 +7,7 @@ const {
   matchInfoEP,
   championInfoEP,
   spectatorInfoEP,
+  matches,
 } = require("./urls.json");
 
 dotenv.config();
@@ -15,10 +16,12 @@ dotenv.config();
 const meta = { "X-Riot-Token": process.env.RIOT_TOKEN };
 const lolHeaders = new Headers(meta);
 
+//TODO: Extract league functions to a LoLHelper.js file
+
 /**
  * Function that accepts a string as a parameter
  * and extracts the user id from it to be returned.
- * @param {String} mention
+ * @param {string} mention
  */
 function getUserFromMention(mention) {
   // The id is the first and only match found by the RegEx.
@@ -37,13 +40,14 @@ function getUserFromMention(mention) {
 /**
  * Function that accepts a league of legends summoner name as a string
  * and fetches their Summoner information for use using the summoner API.
- * @param {String} summonerName
+ * @param {string} summonerName
+ * @returns {Promise<object>}
  */
 async function getLeagueUserData(summonerName) {
   const url = `${leagueBaseUrl + summonerInfoEP + summonerName}`;
 
   const result = await fetch(url, {
-    headers,
+    headers: lolHeaders,
   })
     .then((response) => response.json())
     .catch((error) => error);
@@ -60,11 +64,10 @@ async function getLeagueUserData(summonerName) {
 async function getCurrentMatch(summonerID) {
   const url = `${leagueBaseUrl + spectatorInfoEP + summonerID}`;
   const result = await fetch(url, {
-    headers,
+    headers: lolHeaders,
   })
     .then((response) => response.json())
     .catch((error) => error);
-  console.log(result);
   return result;
 }
 
@@ -75,10 +78,10 @@ async function getCurrentMatch(summonerID) {
  * @returns {Promise<object>} The match data from the url.
  */
 async function getMatchData(matchId) {
-  const url = `${leagueBaseUrl + matchEP + matches + matchId}`;
+  const url = `${leagueBaseUrl + matchInfoEP + matches + matchId}`;
 
   const result = await fetch(url, {
-    headers,
+    headers: lolHeaders,
   })
     .then((response) => response.json())
     .catch((error) => error);
@@ -86,11 +89,34 @@ async function getMatchData(matchId) {
   return result;
 }
 
-async function getChampionData(championName) {}
+/**
+ *
+ * @param {*} championName
+ */
+async function getChampionData(championKey) {
+  const url = `${championInfoEP + championName}.json`;
+  let champInfo = {};
+
+  const result = await fetch(url)
+    .then((response) => response.json())
+    .catch((error) => error);
+
+  if (!result.type) {
+    return "There was an error trying to fetch the champion";
+  }
+
+  result.data.forEach((element) => {
+    if (element.id === championName) {
+      champInfo = JSON.parse(JSON.stringify(element));
+    }
+  });
+  return champInfo;
+}
 
 module.exports = {
   getUserFromMention,
   getLeagueUserInfo: getLeagueUserData,
   getCurrentMatch,
   getMatchData,
+  getChampionData,
 };

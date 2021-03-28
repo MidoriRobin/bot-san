@@ -2,6 +2,7 @@
   "leagueBaseUrl": "https://na1.api.riotgames.com/",
   "summonerInfoEP": "lol/summoner/v4/summoners/by-name/",
   "championInfoEP": "http://ddragon.leagueoflegends.com/cdn/11.6.1/data/en_US/champion/",
+  "championAllInfo": "http://ddragon.leagueoflegends.com/cdn/11.6.1/data/en_US/champion.json",
   "spectatorInfoEP": "lol/spectator/v4/active-games/by-summoner/",
   "matchInfoEP": "lol/match/v4/",
   "matches": "matches/",
