@@ -90,8 +90,9 @@ async function getMatchData(matchId) {
 }
 
 /**
- *
- * @param {*} championName
+ * Uses champion key to fetch champion information
+ * @param {Integer} championName
+ * @returns {Object}
  */
 async function getChampionData(championKey) {
   const url = `${championInfoEP + championName}.json`;

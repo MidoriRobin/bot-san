@@ -21,22 +21,22 @@ module.exports = {
 
     //TODO: Extract functionality to helper functions
 
-    //TODO: Switch out summoner name for arg
+    //Getting player information based on Summoner Name
     const leagueInfoResult = await getLeagueUserInfo(args[0]);
     if (!leagueInfoResult.id) {
       return message.channel.send("Error getting info check the api");
     }
 
+    // Using id from info to do a fetch of spectator info (if it exists)
     const inMatch = await getCurrentMatch(leagueInfoResult.id);
 
     console.log("Fetching match info");
 
-    //TODO: Add code block to send match status to discord, (win or lose)
     if (inMatch.gameId) {
+      message.channel.send("User In a match");
       //TODO: Send summoner champion info (Name, winrate(last 100)), last 100 match info
 
       const gameCheckTimer = setInterval(async () => {
-        message.channel.send("You are in a match");
         const status = await getCurrentMatch(leagueInfoResult.id);
 
         if (!status.gameId) {
@@ -65,7 +65,7 @@ module.exports = {
     } else {
       console.log("Not in a match");
 
-      return message.channel.send("Not in a match");
+      return message.channel.send("Player is not in a match");
     }
   },
 };
