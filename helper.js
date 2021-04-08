@@ -114,10 +114,25 @@ async function getChampionData(championKey) {
   return champInfo;
 }
 
+/**
+ * Uses the min and max entered and randomly chooses between the two,
+ * (min inclusive and max exclusive).
+ * (Sourced from the MDN website)
+ * @param {*} min
+ * @param {*} max
+ * @returns {integer} The integer from the calculation
+ */
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
 module.exports = {
   getUserFromMention,
   getLeagueUserInfo: getLeagueUserData,
   getCurrentMatch,
   getMatchData,
   getChampionData,
+  getRandomInt,
 };
