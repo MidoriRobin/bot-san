@@ -1,3 +1,5 @@
 node_modules
 .env
 testData.json
+.vscode
+Bot-DB.session.sql
