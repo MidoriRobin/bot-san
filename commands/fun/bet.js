@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const { getRandomInt } = require("../../helper");
-
-const server = new Discord.Guild();
+const casino = require("../../collections/casino");
+const bank = require("../../collections/bank");
 
 module.exports = {
   name: "bet",
@@ -12,11 +12,24 @@ module.exports = {
   guildOnly: true,
   cooldown: 1,
   execute(message, args) {
-    const [user, game, side, wager] = args;
-
     const author = `${message.author}`;
 
     message.reply(`Making a bet for ${author}`);
+
+    if (!bank.has(message.author.id)) {
+      console.log(`${message.author} has no balance`);
+      return message.channel.send(
+        `${message.author} you need a balance to make a bet. \n Try using the \`~>wallet\` command`
+      );
+    }
+
+    const [user, game, side, stake] = args;
+
+    makeBetResult = casino.makeBet(message.author.id, game, side, stake);
+
+    if (makeBetResult?.newMatch) {
+      console.log(makeBetResult);
+    }
 
     //Simulating a match being played and its subsequent result
     const flip = getRandomInt(0, 2);
