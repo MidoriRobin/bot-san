@@ -16,14 +16,15 @@ const Users = require("./models/Users")(sequelize, Sequelize.DataTypes);
 const Match = require("./models/Match")(sequelize, Sequelize.DataTypes);
 const Result = require("./models/Result")(sequelize, Sequelize.DataTypes);
 
-Match.hasMany(Result, { foreignKey: "match_id", as: "match" });
+Match.hasMany(Result, { foreignKey: "matchId" });
 Result.belongsTo(Match);
-Users.hasOne(Result, { foreignKey: "user_id", as: "user" });
+Users.hasOne(Result, { foreignKey: "userId" });
+Result.belongsTo(Users);
 
 //User object queries
 Users.prototype.joinMatch = async function (match, wager) {
   const result = await Result.findOne({
-    where: { user_id: this.user_id, match_id: match.id },
+    where: { user_id: this.id, match_id: match.id },
   });
 
   if (result) {
@@ -32,12 +33,12 @@ Users.prototype.joinMatch = async function (match, wager) {
     return result.save();
   }
 
-  return Result.create({ user_id: this.user_id, match_id: match.id, wager });
+  return Result.create({ user_id: this.id, match_id: match.id, wager });
 };
 
 Users.prototype.setOutcome = async function (match, outcome) {
   const result = await Result.findOne({
-    where: { user_id: this.user_id, match_id: match.id },
+    where: { user_id: this.id, match_id: match.id },
   });
 
   if (result) {
@@ -52,14 +53,14 @@ Users.prototype.setOutcome = async function (match, outcome) {
 
 Users.prototype.getAllResult = function () {
   return Result.findAll({
-    where: { user_id: this.user_id },
+    where: { user_id: this.id },
     include: ["match"],
   });
 };
 
 Users.prototype.getAllWinResults = async function () {
   const { count, rows } = Result.findAll({
-    where: { user_id: this.user_id, outcome: "win" },
+    where: { user_id: this.id, outcome: "win" },
     include: ["match"],
   });
 
@@ -68,7 +69,7 @@ Users.prototype.getAllWinResults = async function () {
 
 Users.prototype.getAllLossResults = async function () {
   const { count, rows } = await Result.findAll({
-    where: { user_id: this.user_id, outcome: "loss" },
+    where: { user_id: this.id, outcome: "loss" },
     include: ["match"],
   });
   return { count, rows };
@@ -78,9 +79,9 @@ Users.prototype.getAllLossResults = async function () {
 
 Match.prototype.addMatch = async function (totalWager, gameName, gameId = 0) {
   return Match.create({
-    wager: totalWager,
+    total_stake: totalWager,
     game_name: gameName,
-    game_id: gameId,
+    game_match_id: gameId,
   });
 };
 
@@ -96,6 +97,21 @@ Match.prototype.setResult = async function (matchObj, result) {
 
   console.log("Error no match found");
 
+  return;
+};
+
+//Result object queries
+
+Result.prototype.fetchResults = async function (match_id) {
+  const results = Result.findAll({
+    where: { match_id: id },
+  });
+
+  if (results) {
+    return results;
+  }
+
+  console.log("No results for that match id");
   return;
 };
 

@@ -2,14 +2,19 @@ module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
     "match",
     {
-      wager: {
-        type: DataTypes.INTEGER,
+      total_stake: {
+        type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0,
         allowNull: false,
       },
       status: {
         type: DataTypes.STRING,
         defaultValue: "ongoing",
+        allowNull: false,
+      },
+      result: {
+        type: DataTypes.STRING,
+        defaultValue: "undecided",
         allowNull: false,
       },
       game_name: {
@@ -22,14 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
         allowNull: true,
       },
-      result: {
-        type: DataTypes.STRING,
-        defaultValue: "undecided",
-        allowNull: false,
-      },
     },
     {
       timestamps: true,
+      underscored: true,
     }
   );
 };

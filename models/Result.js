@@ -2,27 +2,32 @@ module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
     "result",
     {
-      match_id: {
+      matchId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
       },
-      user_id: {
-        type: DataTypes.INTEGER,
+      userId: {
+        type: DataTypes.STRING,
         primaryKey: true,
       },
-      wagered: {
-        type: DataTypes.INTEGER,
+      side: {
+        type: DataTypes.ENUM("for", "against"),
+        allowNull: false,
+      },
+      stake: {
+        type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0,
         allowNull: false,
       },
       outcome: {
         type: DataTypes.STRING,
-        defaultValue: 0,
+        defaultValue: "Undecided",
         allowNull: false,
       },
     },
     {
       timestamps: false,
+      // underscored: true,
     }
   );
 };

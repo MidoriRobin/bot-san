@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const fs = require("fs");
 const Discord = require("discord.js");
-const { Users, Model } = require("../dbObjects");
+const { Users } = require("../dbObjects");
 
 const bank = new Discord.Collection();
 
@@ -13,7 +13,7 @@ Reflect.defineProperty(bank, "add", {
       return user.save();
     }
 
-    const newUser = await Users.create({ user_id: id, balance: amount });
+    const newUser = await Users.create({ id: id, balance: amount });
     bank.set(id, newUser);
     return newUser;
   },

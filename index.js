@@ -1,10 +1,11 @@
 const dotenv = require("dotenv");
 const fs = require("fs");
 const Discord = require("discord.js");
-const { Users, Model } = require("./dbObjects");
+const { Users, Match } = require("./dbObjects");
 
 const { prefix } = require("./config.json");
 const bank = require("./collections/bank");
+const casino = require("./collections/casino");
 
 const commandFolders = fs.readdirSync("./commands");
 
@@ -36,8 +37,12 @@ for (const folder of commandFolders) {
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
 client.once("ready", async () => {
-  const balances = await Users.findAll();
-  balances.forEach((b) => bank.set(b.user_id, b));
+  const members = await Users.findAll();
+  const matches = await Match.findAll();
+
+  members.forEach((member) => bank.set(member.id, member));
+  matches.forEach((match) => casino.set(match.id, match));
+
   console.log("Ready!");
 });
 
@@ -69,8 +74,9 @@ client.on("message", (message) => {
     }
   }
 
-  if (command.args && !args.length) {
-    let reply = `You didnt provide any arguments, ${message.author}`;
+  if (command.args && args.length >= command.usage.split(" ")) {
+    console.log(args);
+    let reply = `You didnt provide sufficient arguments, ${message.author}`;
 
     if (command.usage) {
       reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
