@@ -30,7 +30,7 @@ module.exports = {
       message.author.id,
       Number(betId),
       side,
-      stake
+      Number(stake)
     );
 
     if (!joinRslt?.matchId) {

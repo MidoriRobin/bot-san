@@ -35,9 +35,6 @@ Reflect.defineProperty(casino, "joinBet", {
     const match = casino.get(match_id);
 
     if (match) {
-      match.total_stake += stake;
-      match.save();
-
       try {
         const newResult = await Result.create({
           matchId: match_id,
@@ -46,10 +43,17 @@ Reflect.defineProperty(casino, "joinBet", {
           stake,
         });
 
+        // Temporary fix for sequelize decimal to string bug, refer to dbInit.js for a better fix
+        const newStake = Number(match.total_stake) + stake;
+
+        match.total_stake = newStake;
+
+        match.save();
+
+        casino.set(match_id, match);
+
         return newResult;
       } catch (error) {
-        match.total_stake -= stake;
-        match.save();
         console.log(error);
       }
     }

@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       outcome: {
-        type: DataTypes.STRING,
-        defaultValue: "Undecided",
+        type: DataTypes.ENUM("won", "lost", "undecided"),
+        defaultValue: "undecided",
         allowNull: false,
       },
     },

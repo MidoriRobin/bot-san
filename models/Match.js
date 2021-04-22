@@ -18,8 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       game_name: {
-        type: DataTypes.STRING,
-        defaultValue: 0,
+        type: DataTypes.ENUM(
+          "custom",
+          "league",
+          "apex",
+          "brawlhalla",
+          "tft",
+          "lor"
+        ),
+        defaultValue: "custom",
         allowNull: false,
       },
       game_match_id: {
