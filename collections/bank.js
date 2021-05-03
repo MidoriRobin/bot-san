@@ -7,14 +7,20 @@ const bank = new Discord.Collection();
 
 Reflect.defineProperty(bank, "add", {
   value: async function add(id, amount) {
+    const newUser = {};
     const user = bank.get(id);
     if (user) {
       user.balance += Number(amount);
       return user.save();
     }
 
-    const newUser = await Users.create({ id: id, balance: amount });
-    bank.set(id, newUser);
+    try {
+      newUser = await Users.create({ id: id, balance: amount });
+      bank.set(id, newUser);
+    } catch (error) {
+      return error;
+    }
+
     return newUser;
   },
 });
