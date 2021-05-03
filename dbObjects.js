@@ -102,9 +102,9 @@ Match.prototype.setResult = async function (matchObj, result) {
 
 //Result object queries
 
-Result.prototype.fetchResults = async function (match_id) {
+Result.prototype.fetchResults = async function (matchId) {
   const results = Result.findAll({
-    where: { match_id: id },
+    where: { matchId },
   });
 
   if (results) {
@@ -113,6 +113,43 @@ Result.prototype.fetchResults = async function (match_id) {
 
   console.log("No results for that match id");
   return;
+};
+
+Result.prototype.fetchSides = async function (match_id) {
+  const forCount = await Result.count({
+    where: {
+      matchId,
+      side: "for",
+    },
+  });
+
+  const forStake = await Result.sum("stake", {
+    where: {
+      match_id,
+      side: "for",
+    },
+  });
+
+  const agaCount = await Result.count({
+    where: {
+      match_id,
+      side: "against",
+    },
+  });
+
+  const agaStake = await Result.sum("stake", {
+    where: {
+      match_id,
+      side: "against",
+    },
+  });
+
+  if (!forResults && !agaResults) {
+    console.log("No results for that match id");
+    return "no results";
+  }
+
+  return { forCount, forStake, agaCount, agaStake };
 };
 
 module.exports = { Users, Match, Result };

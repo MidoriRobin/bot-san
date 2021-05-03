@@ -21,6 +21,11 @@ require("./models/Wins")(sequelize, Sequelize.DataTypes);
 require("./models/Losses")(sequelize, Sequelize.DataTypes);
 require("./models/Result")(sequelize, Sequelize.DataTypes);
 
+//UNTESTED bugfix for decimal to string bug with sequelize
+Sequelize.postgres.DECIMAL.parse = function (value) {
+  return parseFloat(value);
+};
+
 const force = process.argv.includes("--force") || process.argv.includes("-f");
 
 sequelize
