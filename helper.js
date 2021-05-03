@@ -128,6 +128,37 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
+/**
+ *
+ * @param {*} stake
+ * @param {*} side
+ * @param {*} fCount
+ * @param {*} aCount
+ * @param {*} forStake
+ * @param {*} agaStake
+ * @returns
+ */
+function calcWinnings(stake, side, fCount, aCount, forStake, agaStake) {
+  const ratio = side === "for" ? stake / forStake : stake / agaStake;
+  let winnings = 0;
+
+  /**
+   * Bonus is based on which was the underdog (for or against)
+   */
+
+  if (side === "for") {
+    const bonus = fCount > aCount ? 1 : aCount / fCount;
+    winnings = ratio * agaStake * bonus;
+  } else {
+    const bonus = aCount > fCount ? 1 : fCount / aCount;
+    winnings = ratio * forStake * bonus;
+  }
+
+  const total = Number(stake) + Number(winnings);
+
+  return total;
+}
+
 module.exports = {
   getUserFromMention,
   getLeagueUserInfo: getLeagueUserData,
@@ -135,4 +166,5 @@ module.exports = {
   getMatchData,
   getChampionData,
   getRandomInt,
+  calcWinnings,
 };
