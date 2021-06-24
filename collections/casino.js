@@ -85,7 +85,7 @@ Reflect.defineProperty(casino, "completeBet", {
         where: {
           matchId: id,
         },
-      }
+      },
     );
 
     const resultList = await Result.findAll({
@@ -114,7 +114,7 @@ Reflect.defineProperty(casino, "completeBet", {
         sidesInfo.forCount,
         sidesInfo.agaCount,
         sidesInfo.forStake,
-        sidesInfo.agaStake
+        sidesInfo.agaStake,
       );
 
       console.log(winnings);
@@ -128,6 +128,11 @@ Reflect.defineProperty(casino, "completeBet", {
 
 //Helper functions
 
+/**
+ * A function that uses provided matchId to fetch info about match participants
+ * @param {int} matchId
+ * @returns Number of total for and total against participants and the total stake for each
+ */
 async function fetchSides(matchId) {
   const forCount = await Result.count({
     where: {

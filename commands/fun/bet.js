@@ -21,18 +21,26 @@ module.exports = {
     let outcome = "";
     let matchId = "";
 
-    message.reply(`Making a bet for you`);
+    message.reply(`Attempting to make a bet for you`);
 
     if (!bank.has(message.author.id)) {
       console.log(`${message.author} has no balance`);
       return message.channel.send(
-        `${message.author} you need a balance to make a bet. \n Try using the \`~>wallet\` command`
+        `${message.author} you need a balance to make a bet. \n Try using the \`~>wallet\` command`,
       );
     }
 
     const [user, game, side, stake] = args;
 
+    if (game === "for" || side !== "for" || "against" || !isNaN(stake)) {
+      return message.channel.send(
+        `${message.author} Command parameters incorrectly entered try again or use \`~>help bet\` to learn more about this command.`,
+      );
+    }
+
     if (game !== "custom") {
+      // TODO: Extrapolate league bet functionality to a function, called in its own if statement
+      // Fetches user info based on entered ign
       await message.channel
         .send(`What is the IGN of the person you want to bet on for ${game}`)
         .then(async () => {
@@ -49,24 +57,26 @@ module.exports = {
             .catch((error) => {
               console.log(error);
               message.channel.send(
-                `There was an issue making a bet for you ${author}`
+                `There was an issue making a bet for you ${author}`,
               );
             });
         });
 
+      // Checks if player with ign provided is currently in a match
       if (!(await userGameInfo.isInMatch())) {
         console.log(`${userGameInfo.sName} is not in a match right now`);
         return message.reply(
-          `${userGameInfo.sName} is not in a match right now, cancelling bet`
+          `${userGameInfo.sName} is not in a match right now, cancelling bet`,
         );
       }
 
+      // Attempts to record bet in database returning matchId by using a casino function
       try {
         const { newMatch } = await casino.makeBet(
           message.author.id,
           game,
           side,
-          stake
+          stake,
         );
 
         matchId = newMatch.id;
@@ -77,15 +87,14 @@ module.exports = {
 
       message.reply(`Bet successfully made...awaiting match results`);
 
-      //Return as a promise and run callbacks based on that?
+      // Continuous tracker provides the match result after completion
       const result = await userGameInfo.trackMatch();
-      // const result = "lost";
 
       if (result) {
         console.log("Ending match");
         if (result === "none") {
           return message.reply(
-            "There was an issue creating your bet, (maybe the match is already over)"
+            "There was an issue creating your bet, (maybe the match is already over)",
           );
         }
 
@@ -96,7 +105,7 @@ module.exports = {
         }
 
         message.reply(
-          `${userGameInfo.sName}'s match has just ended! \n` + `${outcome}`
+          `${userGameInfo.sName}'s match has just ended! \n` + `${outcome}`,
         );
 
         await casino.completeBet(matchId, result);
@@ -104,20 +113,6 @@ module.exports = {
         return;
       }
     }
-
-    //--------------------
-
-    //pass result of bet to database
-
-    //do calculations of the result and update the relevant results based on match id
-
-    //once data is persisted reflect win or loss in the balance of the users
-
-    //output result to the discord server
-
-    //done
-
-    //--------------------
 
     //Simulating a match being played and its subsequent result
     // const flip = getRandomInt(0, 2);
