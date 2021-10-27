@@ -1,7 +1,7 @@
 {
-  "name": "bot-san",
+  "name": "itami-bot",
   "version": "1.0.0",
-  "description": "My first attempt at making a Discord bot.",
+  "description": "My first attempt at making a simple Discord bot.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,8 @@
     "pg": "^8.5.1",
     "sequelize": "^6.6.2",
     "sqlite3": "^5.0.2"
+  },
+  "engines": {
+    "node": "14.15.1"
   }
 }
