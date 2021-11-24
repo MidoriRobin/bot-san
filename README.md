@@ -27,3 +27,11 @@ A private discord bot which serves as the main bot for my server
 - `>>fetch-info` (Implemented)
 
 - `>>silence`
+
+- `>>poll`
+
+- `>>play`
+
+- `>>search`
+
+- `>>reload-responses`
